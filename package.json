@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+      "start": "live-server"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
   }
 }

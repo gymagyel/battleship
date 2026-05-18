@@ -62,3 +62,26 @@ test('allShipsSunk returns true if all ships are sunk', () => {
 
   expect(gameboard.allShipsSunk()).toBe(true);
 });
+
+test('receiveAttack stores successful hits', () => {
+  const gameboard = new Gameboard();
+  const ship = new Ship(1);
+
+  gameboard.placeShip(ship, 2, 2);
+
+  gameboard.receiveAttack(2, 2);
+
+  expect(gameboard.hitAttacks).toContainEqual({
+    x: 2,
+    y: 2,
+  });
+});
+
+test('receiveAttack does not allow duplicate attacks', () => {
+  const gameboard = new Gameboard();
+
+  gameboard.receiveAttack(1, 1);
+  gameboard.receiveAttack(1, 1);
+
+  expect(gameboard.missedAttacks.length).toBe(1);
+});
