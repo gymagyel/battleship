@@ -1,30 +1,50 @@
 body {
   font-family: Arial, sans-serif;
   text-align: center;
+  background-color: #0f172a;
+  color: white;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 20px;
 }
 
 .boards {
   display: flex;
   justify-content: center;
-  gap: 50px;
+  gap: 60px;
   margin-top: 30px;
 }
 
 .board {
   display: grid;
   grid-template-columns: repeat(10, 40px);
-  gap: 2px;
+  grid-template-rows: repeat(10, 40px);
+  gap: 3px;
+  background-color: #1e293b;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 .cell {
   width: 40px;
   height: 40px;
-  background-color: lightblue;
-  border: 1px solid #333;
+  background-color: #38bdf8;
+  border-radius: 4px;
+  border: 1px solid #0f172a;
+  box-sizing: border-box;
+  transition: opacity 0.2s;
+}
+
+.cell:hover {
+  opacity: 0.8;
+  cursor: pointer;
 }
 
 .ship {
-  background-color: gray;
+  background-color: #64748b;
 }
 
 .miss {
@@ -32,5 +52,24 @@ body {
 }
 
 .hit {
-  background-color: red;
+  background-color: #ef4444;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #22c55e;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.sunk {
+  background-color: #7f1d1d;
 }

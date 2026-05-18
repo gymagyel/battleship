@@ -3,8 +3,39 @@ import Ship from './Ship.js';
 
 const player = new Player();
 const computer = new Player();
-player.gameboard.randomizeShips();
+let gameOver = false;
+
+let placingShips = true;
+
+const shipLengths = [5, 4, 3, 3, 2];
+
+let currentShipIndex = 0;
+
+let currentDirection = 'horizontal';
+
 computer.gameboard.randomizeShips();
+
+
+
+const restartBtn = document.getElementById('restart-btn');
+
+function restartGame() {
+  player.gameboard.ships = [];
+  player.gameboard.missedAttacks = [];
+  player.gameboard.hitAttacks = [];
+
+  computer.gameboard.ships = [];
+  computer.gameboard.missedAttacks = [];
+  computer.gameboard.hitAttacks = [];
+
+  player.gameboard.randomizeShips();
+  computer.gameboard.randomizeShips();
+
+  gameOver = false;
+
+  renderBoards();
+}
+restartBtn.addEventListener('click', restartGame);
 
 function renderBoard(
   boardElement,
@@ -52,7 +83,20 @@ function renderBoard(
         });
 
         if (hitAttack) {
-  cell.classList.add('hit');
+  const sunkShip = gameboard.ships.find(
+    (shipData) =>
+      shipData.ship.isSunk() &&
+      shipData.coordinates.some(
+        (coord) =>
+          coord.x === x && coord.y === y
+      )
+  );
+
+  if (sunkShip) {
+    cell.classList.add('sunk');
+  } else {
+    cell.classList.add('hit');
+  }
 }
       }
 
@@ -60,12 +104,51 @@ function renderBoard(
     }
   }
 }
+function handleShipPlacement(x, y) {
+  if (!placingShips) {
+    return;
+  }
+
+  const length = shipLengths[currentShipIndex];
+
+  const shipsBefore =
+    player.gameboard.ships.length;
+
+  player.gameboard.placeShip(
+    new Ship(length),
+    x,
+    y,
+    currentDirection
+  );
+
+  if (
+    player.gameboard.ships.length >
+    shipsBefore
+  ) {
+    currentShipIndex++;
+
+    renderBoards();
+  }
+
+  if (currentShipIndex >= shipLengths.length) {
+    placingShips = false;
+
+    renderBoards();
+  }
+}
+
 function handlePlayerAttack(x, y) {
+  if (gameOver) {
+    return;
+  }
+
   player.attack(computer, x, y);
 
   renderBoards();
 
   if (computer.gameboard.allShipsSunk()) {
+    gameOver = true;
+
     alert('Player wins!');
     return;
   }
@@ -75,23 +158,42 @@ function handlePlayerAttack(x, y) {
   renderBoards();
 
   if (player.gameboard.allShipsSunk()) {
+    gameOver = true;
+
     alert('Computer wins!');
   }
 }
 
 function renderBoards() {
-  renderBoard(playerBoard, player.gameboard, true);
+  renderBoard(
+    playerBoard,
+    player.gameboard,
+    true,
+    placingShips
+      ? handleShipPlacement
+      : null
+  );
 
   renderBoard(
     computerBoard,
     computer.gameboard,
     false,
-    handlePlayerAttack
+    placingShips
+      ? null
+      : handlePlayerAttack
   );
 }
 
 const playerBoard = document.getElementById('player-board');
 const computerBoard = document.getElementById('computer-board');
 
+const rotateBtn =
+  document.getElementById('rotate-btn');
+rotateBtn.addEventListener('click', () => {
+  currentDirection =
+    currentDirection === 'horizontal'
+      ? 'vertical'
+      : 'horizontal';
+});
 renderBoards(playerBoard, player.gameboard, true);
 renderBoards(computerBoard, computer.gameboard);
