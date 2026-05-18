@@ -62,6 +62,19 @@ function handlePlayerAttack(x, y) {
   player.attack(computer, x, y);
 
   renderBoards();
+
+  if (computer.gameboard.allShipsSunk()) {
+    alert('Player wins!');
+    return;
+  }
+
+  computer.randomAttack(player);
+
+  renderBoards();
+
+  if (player.gameboard.allShipsSunk()) {
+    alert('Computer wins!');
+  }
 }
 
 function renderBoards() {
