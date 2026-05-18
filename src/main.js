@@ -3,9 +3,8 @@ import Ship from './Ship.js';
 
 const player = new Player();
 const computer = new Player();
-computer.gameboard.placeShip(new Ship(1), 4, 4);
-
-player.gameboard.placeShip(new Ship(1), 2, 3);
+player.gameboard.randomizeShips();
+computer.gameboard.randomizeShips();
 
 function renderBoard(
   boardElement,
@@ -22,9 +21,12 @@ function renderBoard(
       cell.classList.add('cell');
 
       const shipExists = gameboard.ships.some(
-        (shipData) =>
-          shipData.x === x && shipData.y === y
-      );
+  (shipData) =>
+    shipData.coordinates.some(
+      (coord) =>
+        coord.x === x && coord.y === y
+    )
+);
 
       const missedAttack = gameboard.missedAttacks.some(
         (attack) =>
